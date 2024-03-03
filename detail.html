@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+   <html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+      <!--=============== FAVICON ===============-->
+      <link rel="shortcut icon" href="assets/img/logokmb.png" type="image/x-icon">
+
+      <!--=============== REMIXICONS ===============-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+
+      <!--=============== SWIPER CSS ===============-->
+      <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+
+      <!--=============== CSS ===============-->
+      <link rel="stylesheet" href="assets/css/product.css">
+
+      <title>Percetakan dan Reklame Bekasi Karya Minang Baru</title>
+   </head>
+   <body>
+      <!--==================== HEADER ====================-->
+      <section class="header" id="header">
+         <nav class="nav container">
+            <a href="#" class="nav__logo">
+               <i class="ri-ancient-pavilion-fill"></i>Karya minang baru
+            </a>
+
+            <div class="nav__menu">
+               <ul class="nav__list">
+                  <li class="nav__item">
+                     <a href="#home" class="nav__link active-link">
+                        <i class="ri-home-line"></i>
+                        <span>Beranda</span>
+                     </a>
+                  </li>
+
+                  <li class="nav__item">
+                     <a href="#featured" class="nav__link">
+                        <i class="ri-book-3-line"></i>
+                        <span>Produk Kami</span>
+                     </a>
+                  </li>
+
+                  <li class="nav__item">
+                     <a href="#discount" class="nav__link">
+                        <i class="ri-price-tag-3-line"></i>
+                        <span>Tentang</span>
+                     </a>
+                  </li>
+
+                  <li class="nav__item">
+                     <a href="#new" class="nav__link">
+                        <i class="ri-bookmark-line"></i>
+                        <span>Plakat</span>
+                     </a>
+                  </li>
+
+                  <li class="nav__item">
+                     <a href="#testimonial" class="nav__link">
+                        <i class="ri-message-3-line"></i>
+                        <span>Testimonial</span>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+
+            <div class="nav__actions">
+               <!-- login button -->
+               <i class="ri-user-line login-button" id="login-button"></i>
+
+               <!-- theme button -->
+               <i class="ri-moon-line change-theme" id="theme-button"></i>
+            </div>
+         </nav>
+      </section>
+
+      <!--==================== LOGIN ====================-->
+      <div class="login grid" id="login-content">
+         <form action="" class="login__form grid">
+            <h3 class="login__title">Kontak Kami</h3>
+               <div>
+                  <span class="login__signup">
+                    Email: karyaminanggroup@gmail.com
+                  </span>
+   
+                  <span class="login__signup">
+                     Whatsapp: +62 812-9291-6649
+                  </span>
+
+               <!-- <button type="submit" class="login__button button">Log In</button> -->
+            </div>
+         </form>
+
+         <i class="ri-close-line login__close" id="login-close"></i>
+      </div>
+
+      <!--==================== MAIN ====================-->
+      <div class="detailpage">
+         <div class="PrTitle">
+             <div class="prtitle">PRODUCT DETAIL</div>
+             <div class="detail">
+                 <div class="image">
+                     <img src="">
+                 </div>
+                 <div class="content">
+                     <h1 class="name"></h1>
+                     <div class="price"></div>
+                     <div class="description"></div>
+                 </div>
+             </div>
+             <div class="listProduct"></div>
+         </div>
+     
+         <script>
+             let products = null;
+             let region = 'Akrilik'; // Default region
+             // Get datas from file json based on region
+             fetchProductsByRegion();
+     
+             function fetchProductsByRegion() {
+                 let regionParam = new URLSearchParams(window.location.search).get('region');
+                 if (regionParam === 'Kayu' || regionParam === 'Kristal' || regionParam === 'Stempel' || regionParam === 'Banner' || regionParam === 'Piala' || regionParam === 'Souvenir') {
+                     region = regionParam;
+                 }
+     
+                 let jsonFile = `db/${region}.json`;
+     
+                 fetch(jsonFile)
+                     .then(response => response.json())
+                     .then(data => {
+                         products = data;
+                         showDetail();
+                     });
+             }
+     
+             function showDetail() {
+                 // Remove default data from HTML
+                 let detail = document.querySelector('.detail');
+                 let listProduct = document.querySelector('.listProduct');
+                 let productId = new URLSearchParams(window.location.search).get('id');
+                 let thisProduct = products.find(product => product.id == productId);
+                 // If there is no product with id = productId => return to home page
+                 if (!thisProduct) {
+                     window.location.href = "/";
+                     return; // Stop execution if product is not found
+                 }
+     
+                 detail.querySelector('.image img').src = thisProduct.image;
+                 detail.querySelector('.name').innerText = thisProduct.name;
+                 detail.querySelector('.price').innerText = ''; // Clearing price
+                 detail.querySelector('.description').innerText = thisProduct.description;
+     
+                 // Filter out the current product from the list of similar products from the same region
+                 let similarProducts = products.filter(product => product.id != productId && product.region === region);
+                 similarProducts.forEach(product => {
+                     let newProduct = document.createElement('a');
+                     newProduct.href = `/detail.html?id=${product.id}&region=${region}`;
+                     newProduct.classList.add('item');
+                     newProduct.innerHTML = `
+                         <img src="${product.image}" alt="">
+                         <h2>${product.name}</h2>`;
+                     listProduct.appendChild(newProduct);
+                 });
+             }
+         </script>
+     </div>
+     
+      <!--==================== TESTIMONIAL ====================-->
+      <section class="testimonial section" id="testimonial">
+         <h2 class="section__title">
+            Testimonial Pelanggan
+         </h2>
+
+         <div class="testimonial__container container">
+            <div class="testimonial__swiper swiper">
+               <div class="swiper-wrapper">
+                  <article class="testimonial__card swiper-slide">
+                     <img src="assets/img/testimonial-foto-1.png" alt="image" class="testimonial__img">
+
+                     <h2 class="testimonial__title">Aprizza Canisa</h2>
+                     <p class="testimonial__description">
+                        Gw baru pertama kali pakai jasa Percetakan Karya Minang, 
+                        tapi gw langsung suka. Hasil cetakannya rapi banget, 
+                        bahkan lebih bagus dari yang gue bayangin. 
+                        Gue bakalan balik lagi kalau butuh cetak-mencetak.
+
+                     </p>
+
+                     <div class="testimonial__stars">
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-half-fill"></i>
+                     </div>
+                  </article>
+
+                  <article class="testimonial__card swiper-slide">
+                     <img src="assets/img/testimonial-foto-2.png" alt="image" class="testimonial__img">
+
+                     <h2 class="testimonial__title">Areska Maulana</h2>
+                     <p class="testimonial__description">
+                        saya udah pakai jasa Percetakan Karya Minang buat bikin plakat, 
+                        piala, banner sampai undangan pernikahan.
+                        Suka banget sama kualitas hasil cetakannya 
+                        yang rapi dan bagus. Harganya juga terjangkau, jadi saya selalu balik lagi.
+
+                     </p>
+
+                     <div class="testimonial__stars">
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-half-fill"></i>
+                     </div>
+                  </article>
+
+                  <article class="testimonial__card swiper-slide">
+                     <img src="assets/img/testimonial-foto-3.png" alt="image" class="testimonial__img">
+
+                     <h2 class="testimonial__title">Ambi Preskar</h2>
+                     <p class="testimonial__description">
+                        Saya baru saja mencetak plakat untuk Pertamina Drilling di Percetakan Karya Minang. 
+                        Hasilnya sangat memuaskan. Plakat kristal rapi, bagus, dan profesional. 
+                        Selain itu, harga yang ditawarkan juga sangat terjangkau
+
+                     </p>
+
+                     <div class="testimonial__stars">
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-half-fill"></i>
+                     </div>
+                  </article>
+
+                  <article class="testimonial__card swiper-slide">
+                     <img src="assets/img/testimonial-foto-4.png" alt="image" class="testimonial__img">
+
+                     <h2 class="testimonial__title">Nurhaliza Anjani</h2>
+                     <p class="testimonial__description">
+                        Gue highly recommend Percetakan Karya Minang buat 
+                        siapa aja yang butuh jasa percetakan. Percetakan ini 
+                        punya kualitas hasil cetak yang bagus, harga yang terjangkau, 
+                        dan pelayanan yang ramah dan profesional.
+
+                     </p>
+
+                     <div class="testimonial__stars">
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-fill"></i>
+                        <i class="ri-star-half-fill"></i>
+                     </div>
+                  </article>
+               </div>
+            </div>
+         </div>
+      </section>
+
+
+      <!--==================== FOOTER ====================-->
+      <footer class="footer">
+         <div class="footer__container container grid">
+            <div>
+               <a href="#" class="footer__logo">
+                  <i class="ri-ancient-pavilion-fill"></i> Karya Minang Baru
+               </a>
+
+               <p class="footer__descriptiom">
+                  Karya Minang Baru adalah <br>
+                  cv yang bergerak di bidang <br> 
+                  percetakan dan reklame. Kami <br> menyediakan berbagai macam <br> jasa percetakan, 
+                  mulai dari cetak <br> offset, cetak digital, cetak sablon, <br> hingga plakat kristal.
+               </p>
+            </div>
+
+            <div class="footer__data grid">
+               <div>
+                  <h3 class="footer__title">Tentang</h3>
+
+                  <ul class="footer__links">
+                     <li>
+                        <a href="#" class="footer__link">Awards</a>
+                     </li>
+
+                     <li>
+                        <a href="#" class="footer__link">FAQs</a>
+                     </li>
+
+                     <li>
+                        <a href="#" class="footer__link">Privacy policy</a>
+                     </li>
+                     
+                     <li>
+                        <a href="#" class="footer__link">Terms of services</a>
+                     </li>
+                  </ul>
+               </div>
+               
+               <div>
+                  <h3 class="footer__title">Informasi</h3>
+
+                  <ul class="footer__links">
+                     <li>
+                        <a href="#" class="footer__link">Blogs</a>
+                     </li>
+
+                     <li>
+                        <a href="#" class="footer__link">Community</a>
+                     </li>
+
+                     <li>
+                        <a href="#" class="footer__link">Our team</a>
+                     </li>
+
+                     <li>
+                        <a href="#" class="footer__link">Help center</a>
+                     </li>
+                  </ul>
+               </div>
+
+               <div>
+                  <h3 class="footer__title">Alamat</h3>
+
+                  <ul class="footer__links">
+                     <li>
+                        <address class="footer__info">
+                           Jl. Cut Mutia No.98 AB <br> 
+                           RT.002/RW.011, Margahayu <br> 
+                           Kec. Bekasi Tim., Kota Bks <br>
+                           Jawa Barat 17113
+                        </address>
+                     </li>
+
+                     <li>
+                        <address class="footer__info">
+                           Jl. Raya Industri, Pasirsari <br>
+                           Cikarang Sel., Kabupaten <br>
+                           Bekasi, Jawa Barat 17530
+                     </li>
+                  </ul>
+               </div>
+
+               <div>
+                  <h3 class="footer__title">Sosial Media</h3>
+
+                  <div class="footer__social">
+                     <a href="https://www.facebook.com/profile.php?id=61553721533338&mibextid=2JQ9oc" target="_blank" class="footer__social-link">
+                        <i class="ri-facebook-circle-line"></i>
+                     </a>
+
+                     <a href="https://www.instagram.com/karyaminanggroup/" target="_blank" class="footer__social-link">
+                        <i class="ri-instagram-line"></i>
+                     </a>
+
+                     <a href="https://www.tiktok.com/@karyaminanggroup?_t=8hmTJSQyNPT&_r=1" target="_blank" class="footer__social-link">
+                        <i class="ri-tiktok-line"></i>
+                     </a>
+
+                     <a href="https://www.youtube.com/@KaryaMinangGroup" target="_blank" class="footer__social-link">
+                        <i class="ri-youtube-line"></i>
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <span class="footer__copy">
+            &#169; All Rights Reserved By Karyaminangbaru
+         </span>
+      </footer>
+
+      <!--========== SCROLL UP ==========-->
+      <a href="#" class="scrollup" id="scroll-up">
+         <i class="ri-arrow-up-line"></i>
+      </a>
+
+      <!--=============== SCROLLREVEAL ===============-->
+      <script src="assets/js/scrollreveal.min.js"></script>
+
+      <!--=============== SWIPER JS ===============-->
+      <script src="assets/js/swiper-bundle.min.js"></script>
+
+      <!--=============== MAIN JS ===============-->
+      <script src="assets/js/main.js"></script>
+   </body>
+</html>
